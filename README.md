@@ -17,3 +17,25 @@ If you want to contribute to models, be sure to review the [contribution guideli
 ## License
 
 [Apache License 2.0](LICENSE)
+---------------------------------------------------------------------------------------------------------
+## MOBILENET-SSD的使用  
+通过使用mobilenet-ssd为例子，学会使用google的API  
+--------------------------------------------------
+（1）转换训练样本成tfrecord格式，需要提前将数据按照VOC数据集格式整理，制作label_map。
+将需要转化的图片放在models/research/object_detection/test_changshidata  
+转换训练数据和测试数据：  
+python create_pascal_tf_record.py   
+--data_dir=/home/liuyp/liu/models/VOCdevkit/   --label_map_path=/home/liuyp/liu/models/research/object_detection/data/skateboard.pbtxt --set=val   
+--output_path=/home/liuyp/liu/models/tfrecoard_data/val_skateboard.record   --year=VOC2012  
+
+（2）进行训练  
+预训练模型放在地址：/home/liuyp/liu/models/research/object_detection/ssd_mobilenet_v1_coco_2018_01_28  
+运行代码 ：  
+python train.py   
+--logtostderr --train_dir=/home/liuyp/liu/models/research/object_detection/model/ssd_mobilenet_v1_coco_2018_01_28/save_model   --pipeline_config_path=/home/liuyp/liu/models/research/object_detection/model/ssd_mobilenet_v1_coco_2018_01_28/pipeline.config  
+（3）模型转换  
+python export_inference_graph.py   
+--input_type image_tensor  
+--pipeline_config_path=/home/liuyp/liu/models/research/object_detection/model/ssd_mobilenet_v1_coco_2018_01_28/pipeline.config   --trained_checkpoint_prefix=/home/liuyp/liu/models/research/object_detection/model/ssd_mobilenet_v1_coco_2018_01_28/save_model/model.ckpt-12923   --output_directory=/home/liuyp/liu/models/research/object_detection/model/ssd_mobilenet_v1_coco_2018_01_28/saved_model  
+最后输出.pb模型存放在：  
+/home/liuyp/liu/models/research/object_detection/ssd_mobilenet_v1_coco_2018_01_28/saved_model  
